@@ -3,6 +3,8 @@
 @import "@fontsource-variable/inter";
 
 @source "../views";
+@source "../js";
+@source "../../database/seeders";
 
 @theme {
     --color-viola: #2A1B6D;
