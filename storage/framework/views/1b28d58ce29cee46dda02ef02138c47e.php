@@ -1,1 +1,0 @@
-<?php echo app('Illuminate\Foundation\Vite')('resources/js/page-editor.js'); ?><?php /**PATH /home/user/Chianucci/storage/framework/views/1a7acf1dc8f5e9f5a5d78adff0972812.blade.php ENDPATH**/ ?>

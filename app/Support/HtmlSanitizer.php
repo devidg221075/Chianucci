@@ -31,6 +31,7 @@ class HtmlSanitizer
     {
         if (self::$sanitizer === null) {
             $config = (new HtmlSanitizerConfig())
+                ->withMaxInputLength(5_000_000) // di default il sanificatore taglia a 20.000 byte
                 ->allowSafeElements()
                 ->allowLinkSchemes(['https', 'http', 'mailto', 'tel'])
                 ->allowRelativeLinks()

@@ -71,4 +71,8 @@ try {
 }
 
 @unlink(__FILE__);
-page('<h1>Installazione completata</h1><pre>'.htmlspecialchars($log).'</pre><p>Accedi al pannello su <a href="/admin">/admin</a>: al primo accesso ti verrà chiesto di attivare la verifica in due passaggi.</p><p>Il file install.php è stato cancellato.</p>');
+$deleted = ! file_exists(__FILE__);
+page('<h1>Installazione completata</h1><pre>'.htmlspecialchars($log).'</pre><p>Accedi al pannello su <a href="/admin">/admin</a>: al primo accesso ti verrà chiesto di attivare la verifica in due passaggi.</p>'
+    .($deleted
+        ? '<p>Il file install.php è stato cancellato.</p>'
+        : '<p style="color:#b00020"><strong>Attenzione: il file install.php NON è stato cancellato.</strong> Cancellalo subito dalla cartella pubblica con Gestione file di cPanel: chi conosce il codice potrebbe rieseguirlo.</p>'));

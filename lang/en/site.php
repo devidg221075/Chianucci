@@ -22,6 +22,7 @@ return [
     'contact' => [
         'name' => 'Full name', 'company' => 'Company', 'email' => 'Email', 'phone' => 'Phone', 'message' => 'Message',
         'consent' => 'I accept the processing of my personal data according to the Privacy Policy.', 'send' => 'Send request',
+        'failed' => "We could not send your request. Please try again shortly or write to info@chianucci.it or call us.",
         'sent' => 'Thank you, your request has been sent. We will reply as soon as possible.',
         'errors' => [
             'required' => 'Please fill in this field.', 'email' => 'Please enter a valid email address.',

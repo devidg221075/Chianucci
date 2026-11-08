@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ContactMessage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
@@ -28,7 +29,14 @@ class ContactController extends Controller
             return back()->with('status', __('site.contact.sent'));
         }
 
-        Mail::send(new ContactMessage($data, $locale));
+        try {
+            Mail::send(new ContactMessage($data, $locale));
+        } catch (\Throwable $e) {
+            // Posta non raggiungibile: il messaggio non si perde (resta nel registro) e il visitatore è avvisato.
+            Log::error('Messaggio dal modulo contatto non inviato: '.$e->getMessage(), $data);
+
+            return back()->withInput()->with('error', __('site.contact.failed'));
+        }
 
         return back()->with('status', __('site.contact.sent'));
     }

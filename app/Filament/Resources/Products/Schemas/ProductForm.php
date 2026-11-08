@@ -26,10 +26,10 @@ class ProductForm
             ]),
             Section::make('Testi (italiano e inglese affiancati)')->schema([
                 Repeater::make('translations')->label('')->relationship()
-                    ->grid(2)->addable(false)->deletable(false)->reorderable(false)
+                    ->grid(2)->addable()->addActionLabel('Aggiungi una lingua')->maxItems(2)->deletable(false)->reorderable(false)
                     ->default([['locale' => 'it'], ['locale' => 'en']])
                     ->schema([
-                        Select::make('locale')->label('Lingua')->options(['it' => 'Italiano', 'en' => 'English'])->disabled()->dehydrated()->required(),
+                        Select::make('locale')->label('Lingua')->options(['it' => 'Italiano', 'en' => 'English'])->distinct()->required(),
                         TextInput::make('name')->label('Nome')->required(),
                         TextInput::make('slug')->label('Indirizzo (slug)')->required(),
                         Textarea::make('description')->label('Descrizione')->rows(4),
@@ -37,8 +37,14 @@ class ProductForm
             ]),
             Section::make('Immagini')->schema([
                 Repeater::make('images')->label('')->relationship()->orderColumn('sort')
-                    ->schema([FileUpload::make('path')->label('Immagine')->image()->directory('products')->required()]),
+                    ->schema([self::imageUpload()]),
             ]),
         ]);
+    }
+
+    /** Le immagini vanno sul disco "public": è quello che il sito serve (public_html/storage in produzione). */
+    public static function imageUpload(): FileUpload
+    {
+        return FileUpload::make('path')->label('Immagine')->image()->disk('public')->visibility('public')->directory('products')->required();
     }
 }

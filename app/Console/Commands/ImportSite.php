@@ -48,6 +48,9 @@ class ImportSite extends Command
         foreach ($importer->incomplete as $code => $field) {
             $this->warn("Campo mancante in $code: $field");
         }
+        foreach ($importer->duplicates as $slug => $code) {
+            $this->warn("Codice articolo ripetuto: $slug usa lo stesso codice di un altro prodotto ($code)");
+        }
         foreach ($importer->failures as $url => $error) {
             $this->error("$url: $error");
         }

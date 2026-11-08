@@ -7,6 +7,7 @@ use App\Models\ImportRun;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductTranslation;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
@@ -19,6 +20,9 @@ class CatalogImporter
 
     /** @var string[] prodotti importati con campi mancanti */
     public array $incomplete = [];
+
+    /** @var array<string,string> indirizzo => codice articolo già usato da un altro prodotto */
+    public array $duplicates = [];
 
     public function __construct(private SiteClient $client, private CatalogParser $parser, private bool $resume = false) {}
 
@@ -93,29 +97,71 @@ class CatalogImporter
             throw new \RuntimeException('Scheda senza nome o indirizzo');
         }
 
-        if ($locale === 'it') {
-            $category = $this->category($p, 'it');
-            $product = Product::updateOrCreate(['code' => $p['code']], [
-                'category_id' => $category->id,
+        // Tutto o niente: un prodotto non resta mai senza traduzione se un'immagine non si scarica.
+        DB::transaction(function () use ($p, $locale) {
+            if ($locale === 'it') {
+                $product = $this->italianProduct($p);
+                $this->images($product, $p);
+                $this->category($p, 'it', $product->category);
+            } else {
+                $product = ProductTranslation::where('locale', 'it')->where('slug', $p['slug'])->first()?->product
+                    ?? throw new \RuntimeException("Nessun prodotto italiano con indirizzo {$p['slug']}");
+                $this->category($p, 'en', $product->category);
+            }
+
+            // Mai sovrascrivere un testo già presente (può essere stato corretto a mano nel pannello).
+            ProductTranslation::firstOrCreate(
+                ['product_id' => $product->id, 'locale' => $locale],
+                ['name' => $p['name'], 'slug' => $p['slug']]
+            );
+        });
+    }
+
+    /** Il prodotto si riconosce dall'indirizzo italiano; il codice articolo può ripetersi tra prodotti diversi. */
+    private function italianProduct(array $p): Product
+    {
+        $product = ProductTranslation::where('locale', 'it')->where('slug', $p['slug'])->first()?->product;
+
+        // Residuo di un'importazione interrotta (nessuna traduzione): si riprende quello.
+        if (! $product) {
+            $byCode = Product::where('code', $p['code'])->first();
+            if ($byCode && ! $byCode->translations()->where('locale', 'it')->exists()) {
+                $product = $byCode;
+            }
+        }
+
+        if ($product) {
+            // Si completano solo i campi vuoti: i valori già presenti (anche corretti a mano) non si toccano.
+            foreach (['weight_g', 'length_cm', 'link_mm'] as $field) {
+                if ($product->{$field} === null && $p[$field] !== null) {
+                    $product->{$field} = $p[$field];
+                }
+            }
+            if (empty($product->titles) && ! empty($p['titles'])) {
+                $product->titles = $p['titles'];
+            }
+            $product->save();
+        } else {
+            $code = $p['code'];
+            if (Product::where('code', $code)->exists()) {
+                $this->duplicates[$p['slug']] = $code;
+                $code = "$code [{$p['slug']}]";
+            }
+            $product = Product::create([
+                'code' => $code,
+                'category_id' => $this->category($p, 'it')->id,
                 'weight_g' => $p['weight_g'], 'length_cm' => $p['length_cm'], 'link_mm' => $p['link_mm'],
                 'titles' => $p['titles'],
             ]);
-            $this->images($product, $p);
-            foreach (['weight_g', 'length_cm', 'link_mm'] as $field) {
-                if ($p[$field] === null) {
-                    $this->incomplete[$p['code']] = $field;
-                }
-            }
-        } else {
-            $product = ProductTranslation::where('locale', 'it')->where('slug', $p['slug'])->first()?->product
-                ?? throw new \RuntimeException("Nessun prodotto italiano con indirizzo {$p['slug']}");
-            $this->category($p, 'en', $product->category);
         }
 
-        ProductTranslation::updateOrCreate(
-            ['product_id' => $product->id, 'locale' => $locale],
-            ['name' => $p['name'], 'slug' => $p['slug']]
-        );
+        foreach (['weight_g', 'length_cm', 'link_mm'] as $field) {
+            if ($product->{$field} === null) {
+                $this->incomplete[$p['code'].' ('.$p['slug'].')'] = $field;
+            }
+        }
+
+        return $product;
     }
 
     private function category(array $p, string $locale, ?Category $existing = null): Category
@@ -123,7 +169,7 @@ class CatalogImporter
         $category = $existing ?? Category::firstOrCreate(['slug' => $p['category_slug']], ['sort' => Category::count() + 1]);
 
         if ($p['category_slug'] && $p['category_name']) {
-            $category->translations()->updateOrCreate(
+            $category->translations()->firstOrCreate(
                 ['locale' => $locale],
                 ['name' => $p['category_name'], 'slug' => $p['category_slug']]
             );

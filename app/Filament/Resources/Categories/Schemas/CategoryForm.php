@@ -17,7 +17,7 @@ class CategoryForm
             Section::make('Categoria')->columns(2)->schema([
                 TextInput::make('slug')->required()->unique(ignoreRecord: true),
                 TextInput::make('sort')->label('Ordine')->numeric()->default(0),
-                FileUpload::make('image_path')->label('Foto per il mega menu')->image()->directory('categories'),
+                self::imageUpload(),
             ]),
             Section::make('Nome (italiano e inglese affiancati)')->schema([
                 Repeater::make('translations')->label('')->relationship()
@@ -30,5 +30,10 @@ class CategoryForm
                     ]),
             ]),
         ]);
+    }
+
+    public static function imageUpload(): FileUpload
+    {
+        return FileUpload::make('image_path')->label('Foto per il mega menu')->image()->disk('public')->visibility('public')->directory('categories');
     }
 }

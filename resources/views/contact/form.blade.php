@@ -3,6 +3,9 @@
     @if (session('status'))
         <p class="mb-6 border border-oro bg-bianco p-4 text-viola" role="status">{{ session('status') }}</p>
     @endif
+    @if (session('error'))
+        <p class="mb-6 border border-red-700 bg-bianco p-4 text-red-700" role="alert">{{ session('error') }}</p>
+    @endif
     <form method="post" action="{{ $action }}" class="grid gap-4 md:grid-cols-2 bg-bianco border border-oro/40 p-6">
         @csrf
         @foreach ([['nome', 'name', 'text', true], ['azienda', 'company', 'text', false], ['email', 'email', 'email', true], ['telefono', 'phone', 'tel', false]] as [$field, $label, $type, $required])

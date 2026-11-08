@@ -3,6 +3,9 @@
     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session('status')): ?>
         <p class="mb-6 border border-oro bg-bianco p-4 text-viola" role="status"><?php echo e(session('status')); ?></p>
     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session('error')): ?>
+        <p class="mb-6 border border-red-700 bg-bianco p-4 text-red-700" role="alert"><?php echo e(session('error')); ?></p>
+    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
     <form method="post" action="<?php echo e($action); ?>" class="grid gap-4 md:grid-cols-2 bg-bianco border border-oro/40 p-6">
         <?php echo csrf_field(); ?>
         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = [['nome', 'name', 'text', true], ['azienda', 'company', 'text', false], ['email', 'email', 'email', true], ['telefono', 'phone', 'tel', false]]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as [$field, $label, $type, $required]): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>

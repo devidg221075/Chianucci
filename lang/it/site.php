@@ -22,6 +22,7 @@ return [
     'contact' => [
         'name' => 'Nome e cognome', 'company' => 'Azienda', 'email' => 'Email', 'phone' => 'Telefono', 'message' => 'Messaggio',
         'consent' => 'Accetto il trattamento dei dati personali secondo la Privacy Policy.', 'send' => 'Invia richiesta',
+        'failed' => "Non siamo riusciti a inviare la richiesta. Riprova tra poco oppure scrivici a info@chianucci.it o chiamaci.",
         'sent' => 'Grazie, la tua richiesta è stata inviata. Ti risponderemo al più presto.',
         'errors' => [
             'required' => 'Compila questo campo.', 'email' => 'Inserisci un indirizzo email valido.',
