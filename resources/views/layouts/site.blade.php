@@ -1,15 +1,37 @@
+@php
+    use App\Support\SiteUrls;
+    $locale = app()->getLocale();
+    $currentSlug = $currentSlug ?? null;
+@endphp
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="{{ $locale }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'CHIANUCCI MAURIZIO')</title>
-    @vite('resources/css/site.css')
+    @stack('head')
+    @vite(['resources/css/site.css', 'resources/js/app.js'])
+    <style>[x-cloak]{display:none !important}</style>
 </head>
 <body class="min-h-screen flex flex-col">
-    <header class="bg-bianco border-b border-oro/40">
-        <a href="/" class="inline-block p-4"><img src="{{ asset('brand/chianucci.svg') }}" alt="CHIANUCCI MAURIZIO" class="h-12"></a>
+    <header class="sticky top-0 z-50 bg-bianco border-b border-oro/40" x-data="{ menu: false }">
+        <div class="mx-auto max-w-7xl flex items-center justify-between gap-4 px-6 py-3">
+            <a href="{{ url("/$locale/") }}"><img src="{{ asset('brand/chianucci.svg') }}" alt="CHIANUCCI MAURIZIO" class="h-12"></a>
+            <button class="md:hidden text-viola" @click="menu = !menu" :aria-expanded="menu" aria-label="Menu">☰</button>
+            <nav class="hidden md:flex items-center gap-6" :class="{ '!flex flex-col absolute left-0 top-full w-full bg-bianco p-6 items-start': menu }">
+                @foreach (config('site.menu') as $item)
+                    @if ($item === 'catalogo')
+                        <x-mega-menu :locale="$locale" />
+                    @else
+                        <a href="{{ SiteUrls::page($item, $locale) }}" class="nav-voce text-sm font-semibold uppercase tracking-wide hover:text-oro">{{ __('site.menu.'.$item) }}</a>
+                    @endif
+                @endforeach
+                <a href="{{ SiteUrls::page('area-clienti', $locale) }}" class="btn-primario text-sm">{{ __('site.area_clienti') }}</a>
+                <x-language-switch :locale="$locale" :slug="$currentSlug" />
+            </nav>
+        </div>
     </header>
     <main class="flex-1">@yield('content')</main>
+    <x-footer />
 </body>
 </html>
