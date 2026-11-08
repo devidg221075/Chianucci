@@ -14,6 +14,8 @@ return [
         'metal' => 'Titolo', 'all_metals' => 'Tutti', 'link' => 'Misura maglia (mm)', 'length' => 'Dimensioni (cm)', 'weight' => 'Peso (g)',
         'min' => 'da', 'max' => 'a', 'apply' => 'Filtra', 'reset' => 'Azzera filtri', 'empty' => 'Nessun prodotto trovato con questi filtri.',
         'code' => 'Codice', 'details' => 'Scheda', 'request_quote' => 'Richiedi preventivo', 'quote_note' => 'Preventivi e ordini sono riservati ai clienti registrati e approvati.',
+        'seo_description' => 'Catalogo di catene, componenti e gioielli in oro e argento di CHIANUCCI MAURIZIO: consulta i prodotti e richiedi un preventivo.',
+        'product_description' => ":name (codice :code): prodotto del catalogo CHIANUCCI MAURIZIO, manifattura orafa di Arezzo.",
         'back' => 'Torna al catalogo', 'titles' => 'Titoli disponibili',
     ],
 

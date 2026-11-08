@@ -7,14 +7,17 @@ use App\Importer\CatalogParser;
 use App\Importer\PageParser;
 use App\Importer\SiteClient;
 use App\Models\Category;
+use App\Models\CategoryTranslation;
 use App\Models\Product;
+use App\Models\Redirect;
+use App\Support\LegacyUrlMap;
 use App\Models\ProductTranslation;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
 class ImportSite extends Command
 {
-    protected $signature = 'site:import {--only=catalog : catalog|pages} {--resume : salta gli indirizzi già importati} {--base=https://www.chianucci.it} {--retry-sleep=1500 : attesa in ms tra i tentativi}';
+    protected $signature = 'site:import {--only=catalog : catalog|pages|redirects} {--resume : salta gli indirizzi già importati} {--base=https://www.chianucci.it} {--retry-sleep=1500 : attesa in ms tra i tentativi}';
 
     protected $description = 'Importa catalogo e testi dal sito pubblico attuale';
 
@@ -25,6 +28,7 @@ class ImportSite extends Command
         return match ($this->option('only')) {
             'catalog' => $this->catalog($client),
             'pages' => $this->pages($client),
+            'redirects' => $this->redirects($client),
             default => $this->fail('Usa --only=catalog oppure --only=pages'),
         };
     }
@@ -49,6 +53,33 @@ class ImportSite extends Command
         }
 
         return $importer->failures === [] ? self::SUCCESS : self::FAILURE;
+    }
+
+    /** Mappa dei vecchi indirizzi: dalla sitemap delle pagine vecchie e dalle categorie importate. */
+    private function redirects(SiteClient $client): int
+    {
+        $map = new LegacyUrlMap();
+        $xml = $client->get(rtrim($client->base, '/').'/page-sitemap.xml');
+        preg_match_all('#<loc>\s*([^<]+?)\s*</loc>#', $xml, $m);
+
+        $pairs = [];
+        foreach ($m[1] as $url) {
+            $path = parse_url($url, PHP_URL_PATH);
+            if (($to = $map->map($path)) !== null) {
+                $pairs[Redirect::normalize($path)] = $to;
+            }
+        }
+        foreach (CategoryTranslation::with('category')->get() as $t) {
+            $slug = config("site.catalog_slug.{$t->locale}");
+            $pairs[Redirect::normalize("/{$t->locale}/categoria-prodotto/{$t->slug}")] = "/{$t->locale}/$slug?categoria={$t->category->slug}";
+        }
+
+        foreach ($pairs as $from => $to) {
+            Redirect::updateOrCreate(['from_path' => $from], ['to_path' => $to]);
+        }
+        $this->info(count($pairs).' reindirizzamenti 301 registrati');
+
+        return self::SUCCESS;
     }
 
     /** Salva i testi delle pagine vecchie per la revisione; non tocca le pagine del nuovo sito. */

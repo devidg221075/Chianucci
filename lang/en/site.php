@@ -14,6 +14,8 @@ return [
         'metal' => 'Metal title', 'all_metals' => 'All', 'link' => 'Link size (mm)', 'length' => 'Length (cm)', 'weight' => 'Weight (g)',
         'min' => 'from', 'max' => 'to', 'apply' => 'Filter', 'reset' => 'Reset filters', 'empty' => 'No products found with these filters.',
         'code' => 'Code', 'details' => 'Details', 'request_quote' => 'Request a quote', 'quote_note' => 'Quotes and orders are reserved for registered, approved customers.',
+        'seo_description' => 'Catalogue of gold and silver chains, components and jewellery by CHIANUCCI MAURIZIO: browse the products and request a quote.',
+        'product_description' => ":name (code :code): product from the CHIANUCCI MAURIZIO catalogue, goldsmith manufacturer in Arezzo.",
         'back' => 'Back to the catalogue', 'titles' => 'Available titles',
     ],
 

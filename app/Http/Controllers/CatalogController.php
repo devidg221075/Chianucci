@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductTranslation;
+use App\Support\Seo;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
@@ -44,7 +45,14 @@ class CatalogController extends Controller
             });
         }
 
+        $seo = Seo::make(
+            __('site.catalog.seo_description'),
+            url("/$locale/".config("site.catalog_slug.$locale")),
+            collect(config('site.locales'))->mapWithKeys(fn ($l) => [$l => url("/$l/".config("site.catalog_slug.$l"))])->all(),
+        );
+
         return view('catalog.index', [
+            'seo' => $seo,
             'products' => $query->orderBy('code')->paginate(24)->withQueryString(),
             'categories' => Category::with('translations')->orderBy('sort')->get(),
             'metals' => self::METALS,
@@ -62,7 +70,17 @@ class CatalogController extends Controller
 
         $product = Product::with(['translations', 'images', 'category.translations'])->findOrFail($translation->product_id);
 
-        return view('catalog.show', ['product' => $product]);
+        $used = $product->translations->firstWhere('locale', $locale) ?? $product->translations->firstWhere('locale', 'it');
+        $urls = $product->translations->mapWithKeys(fn ($t) => [$t->locale => url("/{$t->locale}/prodotto/{$t->slug}")])->all();
+        $canonical = $urls[$used->locale];
+        $seo = Seo::make(
+            $used->description ?: __('site.catalog.product_description', ['name' => $used->name, 'code' => $product->code]),
+            $canonical,
+            $urls,
+            Seo::product($product, $used->name, $used->description, $canonical),
+        );
+
+        return view('catalog.show', ['product' => $product, 'seo' => $seo]);
     }
 
     private function text(Request $request, string $key): ?string

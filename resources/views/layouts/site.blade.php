@@ -9,6 +9,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'CHIANUCCI MAURIZIO')</title>
+    @isset($seo)
+        @if (! empty($seo['description']))<meta name="description" content="{{ $seo['description'] }}">@endif
+        <link rel="canonical" href="{{ $seo['canonical'] }}">
+        @foreach ($seo['alternates'] as $code => $href)
+            <link rel="alternate" hreflang="{{ $code }}" href="{{ $href }}">
+        @endforeach
+        @if (! empty($seo['alternates']))
+            <link rel="alternate" hreflang="x-default" href="{{ $seo['alternates']['it'] ?? reset($seo['alternates']) }}">
+        @endif
+        @if (! empty($seo['jsonld']))
+            <script type="application/ld+json">{!! json_encode($seo['jsonld'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
+        @endif
+    @endisset
     @stack('head')
     @vite(['resources/css/site.css', 'resources/js/app.js'])
     <style>[x-cloak]{display:none !important}</style>

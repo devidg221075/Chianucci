@@ -179,4 +179,33 @@ class ImporterTest extends TestCase
         $this->assertSame('corpo', $result['https://www.chianucci.it/ok/']);
         $this->assertInstanceOf(\Throwable::class, $result['https://www.chianucci.it/ko/']);
     }
+
+    public function test_redirects_import_builds_the_map_from_the_old_sitemap_and_categories(): void
+    {
+        $category = \App\Models\Category::create(['slug' => 'corda', 'sort' => 1]);
+        $category->translations()->create(['locale' => 'it', 'name' => 'Corda', 'slug' => 'corda']);
+        $category->translations()->create(['locale' => 'en', 'name' => 'Rope', 'slug' => 'rope']);
+
+        Http::fake(['*/page-sitemap.xml' => Http::response('<urlset>'
+            .'<url><loc>https://www.chianucci.it/it/</loc></url>'
+            .'<url><loc>https://www.chianucci.it/it/lavorazioni/fusione/</loc></url>'
+            .'<url><loc>https://www.chianucci.it/en/processings/welding/</loc></url>'
+            .'<url><loc>https://www.chianucci.it/it/my-account/</loc></url>'
+            .'<url><loc>https://www.chianucci.it/it/contatti/</loc></url>'
+            .'</urlset>')]);
+
+        $this->artisan('site:import --retry-sleep=0 --only=redirects')->assertSuccessful();
+
+        $map = \App\Models\Redirect::pluck('to_path', 'from_path')->all();
+        $this->assertSame('/it/fusione', $map['/it/lavorazioni/fusione']);
+        $this->assertSame('/en/welding', $map['/en/processings/welding']);
+        $this->assertSame('/it/area-clienti', $map['/it/my-account']);
+        $this->assertSame('/it/catalogo?categoria=corda', $map['/it/categoria-prodotto/corda']);
+        $this->assertSame('/en/catalogue?categoria=corda', $map['/en/categoria-prodotto/rope']);
+        $this->assertArrayNotHasKey('/it/contatti', $map);
+        $this->assertArrayNotHasKey('/it', $map);
+
+        $this->artisan('site:import --retry-sleep=0 --only=redirects')->assertSuccessful();
+        $this->assertSame(count($map), \App\Models\Redirect::count(), 'Rilanciato due volte non duplica');
+    }
 }

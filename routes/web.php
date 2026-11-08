@@ -3,10 +3,13 @@
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/it/', 301);
+Route::get('/sitemap.xml', [SitemapController::class, 'sitemap']);
+Route::get('/robots.txt', [SitemapController::class, 'robots']);
 
 foreach (config('site.locales') as $locale) {
     Route::middleware(SetLocale::class)->group(function () use ($locale) {
