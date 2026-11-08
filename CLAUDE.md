@@ -22,6 +22,7 @@
 - Catalogo: un solo livello di categorie, come oggi (23 categorie/famiglie elencate nell'audit sotto, tutte allo stesso livello), con filtri per materiale, sezione, lunghezza e finitura.
 - Utenti: NON migrare gli utenti del sito attuale; i clienti si registrano di nuovo nel nuovo sito.
 - Foto: immagini prodotto scaricate dal sito attuale (378 prodotti) + foto aziendali (sede, laboratorio, lavorazioni) che il cliente invierà.
+- Modifica contenuti (richiesta del cliente): vuole modificare testi e pagine da solo, con editor LIBERO trascina-e-rilascia (non solo blocchi fissi). Questo mette in discussione la scelta Laravel: da riconsiderare in rapporto a WordPress (vedi conversazione dell'8/11/2026).
 - Sotto-progetti: 1) sito istituzionale e catalogo pubblico, 2) Area Clienti B2B, 3) backoffice.
 
 # Audit del sito attuale (letto con curl l'8 novembre 2026)
