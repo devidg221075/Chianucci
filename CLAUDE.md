@@ -23,6 +23,7 @@
 - Utenti: NON migrare gli utenti del sito attuale; i clienti si registrano di nuovo nel nuovo sito.
 - Foto: immagini prodotto scaricate dal sito attuale (378 prodotti) + foto aziendali (sede, laboratorio, lavorazioni) che il cliente invierà.
 - Modifica contenuti (richiesta del cliente): vuole modificare testi e pagine da solo, con editor LIBERO trascina-e-rilascia (non solo blocchi fissi). DECISO: piattaforma Laravel con editor libero trascina-e-rilascia integrato (page builder), non WordPress; più lavoro iniziale accettato dal cliente. Pannello admin Laravel (Filament) per contenuti, con IT/EN affiancati.
+- Dati prodotto: importare SOLO dal sito pubblico (il cliente non vuole dipendere dal database vecchio, niente export phpMyAdmin). Scheda prodotto attuale (es. /it/prodotto/corda-100/): ARTICOLO, PESO (gr), DIMENSIONI (cm), MISURE MAGLIE (mm), PREZZO "Da definire" (soggetto al costo del metallo; NON importare né mostrare), TITOLO base Argento con opzioni oro AU 750 / AU 585 / AU 375 (min. 1 kg), info aggiuntive, quantità, pulsante preventivo YITH. NON esistono sezione/finitura come nei mockup: i filtri vanno basati sui dati reali (categoria, titolo/materiale, misura maglia, dimensioni, peso).
 - Sotto-progetti: 1) sito istituzionale e catalogo pubblico, 2) Area Clienti B2B, 3) backoffice.
 
 # Audit del sito attuale (letto con curl l'8 novembre 2026)
