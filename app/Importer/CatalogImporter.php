@@ -12,6 +12,8 @@ use Throwable;
 
 class CatalogImporter
 {
+    private const BATCH = 8;
+
     /** @var array<string,string> url => errore */
     public array $failures = [];
 
@@ -41,20 +43,28 @@ class CatalogImporter
         $urls = $this->productUrls();
 
         foreach (['it', 'en'] as $locale) {
-            foreach ($urls[$locale] as $url) {
-                $this->importUrl($url, $locale);
+            foreach (array_chunk($urls[$locale], self::BATCH, true) as $batch) {
+                $todo = array_filter($batch, fn ($url) => ! $this->alreadyDone($url));
+                $pages = $todo === [] ? [] : $this->client->getMany($todo);
+                foreach ($todo as $url) {
+                    $this->importUrl($url, $locale, $pages[$url]);
+                }
             }
         }
     }
 
-    private function importUrl(string $url, string $locale): void
+    private function alreadyDone(string $url): bool
     {
-        if ($this->resume && ImportRun::where('url', $url)->where('status', 'ok')->exists()) {
-            return;
-        }
+        return $this->resume && ImportRun::where('url', $url)->where('status', 'ok')->exists();
+    }
 
+    private function importUrl(string $url, string $locale, string|Throwable $page): void
+    {
         try {
-            $parsed = $this->parser->parseProduct($this->client->get($url), $locale);
+            if ($page instanceof Throwable) {
+                throw $page;
+            }
+            $parsed = $this->parser->parseProduct($page, $locale);
             $this->store($parsed, $locale);
             ImportRun::updateOrCreate(['url' => $url], ['status' => 'ok', 'error' => null]);
         } catch (Throwable $e) {

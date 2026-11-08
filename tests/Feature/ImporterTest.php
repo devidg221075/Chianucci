@@ -164,4 +164,19 @@ class ImporterTest extends TestCase
         $this->assertContains('Chianucci Maurizio dal 1973', $texts);
         $this->assertNotEmpty(array_filter($page['blocks'], fn ($b) => $b['tag'] === 'p'));
     }
+
+    public function test_get_many_returns_bodies_and_errors_per_url(): void
+    {
+        Http::fake([
+            '*/ok/' => Http::response('corpo'),
+            '*/ko/' => Http::response('boom', 500),
+        ]);
+
+        $result = (new SiteClient('https://www.chianucci.it', 2, 0))->getMany([
+            'https://www.chianucci.it/ok/', 'https://www.chianucci.it/ko/',
+        ]);
+
+        $this->assertSame('corpo', $result['https://www.chianucci.it/ok/']);
+        $this->assertInstanceOf(\Throwable::class, $result['https://www.chianucci.it/ko/']);
+    }
 }

@@ -17,4 +17,33 @@ class SiteClient
     {
         return Http::timeout(40)->retry($this->retries, $this->sleepMs)->get($url)->throw()->body();
     }
+
+    /**
+     * Scarica più indirizzi in parallelo; quelli che falliscono si ripetono uno a uno con i ritentativi.
+     *
+     * @param  string[]  $urls
+     * @return array<string,string|\Throwable> url => corpo oppure l'errore finale
+     */
+    public function getMany(array $urls): array
+    {
+        $urls = array_values($urls);
+        $responses = Http::pool(fn ($pool) => array_map(fn ($u) => $pool->timeout(40)->get($u), $urls));
+
+        $result = [];
+        foreach ($urls as $i => $url) {
+            $response = $responses[$i] ?? null;
+            if ($response instanceof \Illuminate\Http\Client\Response && $response->successful()) {
+                $result[$url] = $response->body();
+
+                continue;
+            }
+            try {
+                $result[$url] = $this->get($url);
+            } catch (\Throwable $e) {
+                $result[$url] = $e;
+            }
+        }
+
+        return $result;
+    }
 }
