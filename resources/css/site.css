@@ -1,0 +1,50 @@
+@import "tailwindcss";
+@import "@fontsource-variable/montserrat";
+@import "@fontsource-variable/inter";
+
+@source "../views";
+
+@theme {
+    --color-viola: #2A1B6D;
+    --color-oro: #BD9F69;
+    --color-avorio: #F7F3E8;
+    --color-bianco: #FFFFFF;
+    --color-antracite: #2B2B2B;
+    --font-titoli: "Montserrat Variable", system-ui, sans-serif;
+    --font-testi: "Inter Variable", system-ui, sans-serif;
+}
+
+:root {
+    --viola: #2A1B6D;
+    --oro: #BD9F69;
+    --avorio: #F7F3E8;
+    --antracite: #2B2B2B;
+}
+
+body {
+    font-family: var(--font-testi);
+    color: var(--antracite);
+    background: var(--avorio);
+}
+
+h1, h2, h3, .nav-voce {
+    font-family: var(--font-titoli);
+    color: var(--viola);
+}
+
+.btn-primario,
+.btn-secondario {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .75rem 1.5rem;
+    font-family: var(--font-titoli);
+    font-weight: 600;
+    border-radius: .25rem;
+    transition: background-color .2s, color .2s;
+}
+
+.btn-primario { background: var(--viola); color: #fff; }
+.btn-primario:hover { background: #1d1250; }
+.btn-secondario { border: 1px solid var(--oro); color: var(--viola); background: transparent; }
+.btn-secondario:hover { background: var(--oro); color: #fff; }
