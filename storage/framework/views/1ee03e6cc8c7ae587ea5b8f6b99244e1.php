@@ -28,7 +28,7 @@
 </head>
 <body class="min-h-screen flex flex-col">
     <header class="sticky top-0 z-50 bg-bianco border-b border-oro/40" x-data="{ menu: false }">
-        <div class="mx-auto max-w-7xl flex items-center justify-between gap-4 px-6 py-3">
+        <div class="contenitore flex items-center justify-between gap-4 py-2">
             <a href="<?php echo e(url("/$locale/")); ?>"><img src="<?php echo e(asset('brand/chianucci.svg')); ?>" alt="CHIANUCCI MAURIZIO" class="h-12"></a>
             <button class="md:hidden text-viola" @click="menu = !menu" :aria-expanded="menu" aria-label="Menu">☰</button>
             <nav class="hidden md:flex items-center gap-6" :class="{ '!flex flex-col absolute left-0 top-full w-full bg-bianco p-6 items-start': menu }">
@@ -57,10 +57,10 @@
 <?php unset($__componentOriginalc6c85bb9195992d14c3dfbe16d5acc2d); ?>
 <?php endif; ?>
                     <?php else: ?>
-                        <a href="<?php echo e(SiteUrls::page($item, $locale)); ?>" class="nav-voce text-sm font-semibold uppercase tracking-wide hover:text-oro"><?php echo e(__('site.menu.'.$item)); ?></a>
+                        <a href="<?php echo e(SiteUrls::page($item, $locale)); ?>" class="nav-voce hover:text-oro-scuro"><?php echo e(__('site.menu.'.$item)); ?></a>
                     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-                <a href="<?php echo e(SiteUrls::page('area-clienti', $locale)); ?>" class="btn-primario text-sm"><?php echo e(__('site.area_clienti')); ?></a>
+                <a href="<?php echo e(SiteUrls::page('area-clienti', $locale)); ?>" class="btn-primario"><?php echo e(__('site.area_clienti')); ?></a>
                 <?php if (isset($component)) { $__componentOriginal2816f070aad2a35f261d95e4abb88fcf = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal2816f070aad2a35f261d95e4abb88fcf = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.language-switch','data' => ['locale' => $locale,'slug' => $currentSlug]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -110,9 +110,9 @@
 <?php unset($__componentOriginal8a8716efb3c62a45938aca52e78e0322); ?>
 <?php endif; ?>
     <div data-cookie-banner x-data="cookieNotice" x-show="show" x-cloak
-         class="fixed bottom-0 inset-x-0 z-50 bg-viola text-avorio text-sm p-4 flex flex-wrap items-center justify-center gap-4" role="region" aria-label="Cookie">
+         class="fixed bottom-0 inset-x-0 z-50 bg-viola text-avorio testo-piccolo p-4 flex flex-wrap items-center justify-center gap-4" role="region" aria-label="Cookie">
         <p><?php echo e(__('site.cookie.text')); ?> <a class="underline" href="<?php echo e(SiteUrls::page('privacy', $locale)); ?>"><?php echo e(__('site.cookie.link')); ?></a></p>
-        <button type="button" class="btn-secondario !text-avorio !py-1" @click="dismiss"><?php echo e(__('site.cookie.ok')); ?></button>
+        <button type="button" class="btn-chiaro" @click="dismiss"><?php echo e(__('site.cookie.ok')); ?></button>
     </div>
 </body>
 </html>

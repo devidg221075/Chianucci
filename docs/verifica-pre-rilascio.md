@@ -21,6 +21,17 @@ Data: 8 novembre 2026. Stato: verifiche automatiche e di browser eseguite su un'
   contrasto del testo oro (token `oro-scuro` #7A5F1F) e della paginazione.
 - Velocità: circa 550 ms di caricamento completo in locale (senza cache né compressione del server); da rimisurare sulla VPS.
 
+## Regole della tavola grafica (verifica automatica)
+
+- `tests/Feature/DesignRulesTest.php` fa rispettare nel codice: spaziature a 8 punti (8, 16, 24, 32, 48, 64 px), griglia 12/8/4
+  colonne (desktop 1200-1440, tablet 768-1199, mobile 320-767) con contenitore da 1200 px, scala dei titoli con righe multiple
+  di 8, foto con proporzioni fisse, pulsanti primario/secondario con freccia come nella tavola.
+- `scripts/audit-grafica.cjs` misura le stesse regole nel browser sulle pagine reali (padding, margini, gap, dimensioni dei
+  titoli, larghezza del contenitore) a 390, 900 e 1280 px: esito **0 violazioni** su Home, Azienda, Catalogo, Contatti ed EN.
+  Il controllo è stato provato anche al contrario (inserendo valori fuori regola le segnala).
+- Limite: la tavola non dà misure numeriche per titoli e foto: la scala dei titoli e le proporzioni delle foto sono scelte di
+  progetto coerenti con la tavola, non misure ricavate da essa.
+
 ## Pacchetto di pubblicazione
 
 - Pacchetto reale creato con `php artisan site:package` (librerie di produzione senza strumenti di sviluppo, circa 46 MB

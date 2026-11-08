@@ -23,12 +23,12 @@ document.addEventListener('alpine:init', () => {
             });
 
             const bm = this.editor.Blocks;
-            bm.add('sezione', { label: 'Sezione', category: 'Struttura', content: '<section class="py-12 px-6"><div class="mx-auto max-w-5xl"><h2>Titolo sezione</h2><p>Testo della sezione.</p></div></section>' });
-            bm.add('griglia', { label: 'Griglia 3 colonne', category: 'Struttura', content: '<div class="grid grid-cols-1 md:grid-cols-3 gap-6 py-8"><div>Colonna 1</div><div>Colonna 2</div><div>Colonna 3</div></div>' });
+            bm.add('sezione', { label: 'Sezione', category: 'Struttura', content: '<section class="sezione"><div class="contenitore"><h2>Titolo sezione</h2><p>Testo della sezione.</p></div></section>' });
+            bm.add('griglia', { label: 'Griglia 3 colonne', category: 'Struttura', content: '<div class="contenitore"><div class="griglia griglia-alto"><div class="col-terzo">Colonna 1</div><div class="col-terzo">Colonna 2</div><div class="col-terzo">Colonna 3</div></div></div>' });
             bm.add('titolo', { label: 'Titolo', category: 'Testo', content: '<h2>Nuovo titolo</h2>' });
             bm.add('testo', { label: 'Testo', category: 'Testo', content: '<p>Scrivi qui il testo.</p>' });
             bm.add('immagine', { label: 'Immagine', category: 'Media', select: true, content: { type: 'image' }, activate: true });
-            bm.add('tessera', { label: 'Tessera', category: 'Contenuti', content: '<div class="p-6 bg-white border border-oro/40"><h3>Titolo</h3><p>Descrizione.</p></div>' });
+            bm.add('tessera', { label: 'Tessera', category: 'Contenuti', content: '<div class="scheda"><span class="scheda-testo">Titolo<span class="block testo-piccolo font-normal">Descrizione.</span></span></div>' });
             bm.add('pulsante', { label: 'Pulsante', category: 'Contenuti', content: '<a href="#" class="btn-primario">Scopri</a>' });
 
             const sync = () => {

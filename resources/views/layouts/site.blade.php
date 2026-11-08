@@ -28,7 +28,7 @@
 </head>
 <body class="min-h-screen flex flex-col">
     <header class="sticky top-0 z-50 bg-bianco border-b border-oro/40" x-data="{ menu: false }">
-        <div class="mx-auto max-w-7xl flex items-center justify-between gap-4 px-6 py-3">
+        <div class="contenitore flex items-center justify-between gap-4 py-2">
             <a href="{{ url("/$locale/") }}"><img src="{{ asset('brand/chianucci.svg') }}" alt="CHIANUCCI MAURIZIO" class="h-12"></a>
             <button class="md:hidden text-viola" @click="menu = !menu" :aria-expanded="menu" aria-label="Menu">☰</button>
             <nav class="hidden md:flex items-center gap-6" :class="{ '!flex flex-col absolute left-0 top-full w-full bg-bianco p-6 items-start': menu }">
@@ -36,10 +36,10 @@
                     @if ($item === 'catalogo')
                         <x-mega-menu :locale="$locale" />
                     @else
-                        <a href="{{ SiteUrls::page($item, $locale) }}" class="nav-voce text-sm font-semibold uppercase tracking-wide hover:text-oro">{{ __('site.menu.'.$item) }}</a>
+                        <a href="{{ SiteUrls::page($item, $locale) }}" class="nav-voce hover:text-oro-scuro">{{ __('site.menu.'.$item) }}</a>
                     @endif
                 @endforeach
-                <a href="{{ SiteUrls::page('area-clienti', $locale) }}" class="btn-primario text-sm">{{ __('site.area_clienti') }}</a>
+                <a href="{{ SiteUrls::page('area-clienti', $locale) }}" class="btn-primario">{{ __('site.area_clienti') }}</a>
                 <x-language-switch :locale="$locale" :slug="$currentSlug" />
             </nav>
         </div>
@@ -47,9 +47,9 @@
     <main class="flex-1">@yield('content')</main>
     <x-footer />
     <div data-cookie-banner x-data="cookieNotice" x-show="show" x-cloak
-         class="fixed bottom-0 inset-x-0 z-50 bg-viola text-avorio text-sm p-4 flex flex-wrap items-center justify-center gap-4" role="region" aria-label="Cookie">
+         class="fixed bottom-0 inset-x-0 z-50 bg-viola text-avorio testo-piccolo p-4 flex flex-wrap items-center justify-center gap-4" role="region" aria-label="Cookie">
         <p>{{ __('site.cookie.text') }} <a class="underline" href="{{ SiteUrls::page('privacy', $locale) }}">{{ __('site.cookie.link') }}</a></p>
-        <button type="button" class="btn-secondario !text-avorio !py-1" @click="dismiss">{{ __('site.cookie.ok') }}</button>
+        <button type="button" class="btn-chiaro" @click="dismiss">{{ __('site.cookie.ok') }}</button>
     </div>
 </body>
 </html>
