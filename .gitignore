@@ -27,3 +27,7 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 dist/
+database/*.sqlite
+database/*.sqlite-*
+storage/app/public/*
+!storage/app/public/.gitignore
