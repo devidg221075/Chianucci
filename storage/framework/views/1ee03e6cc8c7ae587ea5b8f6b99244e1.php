@@ -109,6 +109,11 @@
 <?php $component = $__componentOriginal8a8716efb3c62a45938aca52e78e0322; ?>
 <?php unset($__componentOriginal8a8716efb3c62a45938aca52e78e0322); ?>
 <?php endif; ?>
+    <div data-cookie-banner x-data="{ show: false }" x-init="try { show = ! localStorage.getItem('cookie-notice') } catch (e) { show = true }" x-show="show" x-cloak
+         class="fixed bottom-0 inset-x-0 z-50 bg-viola text-avorio text-sm p-4 flex flex-wrap items-center justify-center gap-4" role="region" aria-label="Cookie">
+        <p><?php echo e(__('site.cookie.text')); ?> <a class="underline" href="<?php echo e(SiteUrls::page('privacy', $locale)); ?>"><?php echo e(__('site.cookie.link')); ?></a></p>
+        <button type="button" class="btn-secondario !text-avorio !py-1" @click="try { localStorage.setItem('cookie-notice', '1') } catch (e) {} show = false"><?php echo e(__('site.cookie.ok')); ?></button>
+    </div>
 </body>
 </html>
 <?php /**PATH /home/user/Chianucci/resources/views/layouts/site.blade.php ENDPATH**/ ?>

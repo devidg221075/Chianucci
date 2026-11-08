@@ -30,4 +30,5 @@ return [
             'string' => 'The value is not valid.',
         ],
     ],
+    'cookie' => ['text' => "This site uses only technical cookies, necessary for it to work. We do not use profiling cookies or third-party tools.", 'link' => 'Privacy notice', 'ok' => 'Got it'],
 ];

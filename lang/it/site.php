@@ -30,4 +30,5 @@ return [
             'string' => 'Il valore inserito non è valido.',
         ],
     ],
+    'cookie' => ['text' => "Questo sito usa solo cookie tecnici, necessari al funzionamento. Non usiamo cookie di profilazione né strumenti di terze parti.", 'link' => 'Informativa', 'ok' => 'Ho capito'],
 ];
