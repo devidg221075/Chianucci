@@ -21,3 +21,13 @@
 - Flusso ordini (deciso): un ordine nasce solo da un preventivo accettato dal cliente; niente invio diretto di ordini dalla scheda prodotto.
 - Categorie del catalogo: le stesse del sito attuale (da ricavare quando il dominio è raggiungibile).
 - Sotto-progetti: 1) sito istituzionale e catalogo pubblico, 2) Area Clienti B2B, 3) backoffice.
+
+# Audit del sito attuale (letto con curl l'8 novembre 2026)
+
+- Piattaforma: WordPress 7.0.7 + WooCommerce 10.8.1, WPML (it/en), WPBakery, Slider Revolution, YITH Request a Quote e YITH Product Options (premium), Yoast SEO, tema "textron". Server dietro BitNinja WAF e Caddy.
+- Il sito è GIÀ bilingue: /it/ e /en/ (la radice reindirizza a /it/). ~378 prodotti per lingua (756 URL nella sitemap prodotti).
+- URL attuali da reindirizzare (301): /it/catalogo/, /it/catalogo/catalogo-pdf/, /it/lavorazioni/{fusione,galvanica,preparazione,pulitura-e-lucidatura,saldatura}/, /it/azienda-chi-siamo-maurizio-chianucci/, /it/contatti/, /it/prodotto/<slug>/, /it/categoria-prodotto/<slug>/, equivalenti /en/ (catalogue, processings, contacts, company-about-us-maurizio-chianucci, ...).
+- Categorie/famiglie prodotto (IT): anelli, bizantina, calandra, colorati, collane, corda, doppia-tripla, elastico, elementi, fantasia, forzatina, grumetta, maglia-marina, molla, nonna-fantasia, palmie, pietre-zirconi, rettangolare, rolo, rosetta, schiava, scomparsa, traversino.
+- Documenti PDF pubblici da conservare: certificato Synesgy (15/05/2024), rendiconto aiuti di Stato.
+- Il sito attuale ha pagine di registrazione, my-account, carrello e checkout WooCommerce.
+- Nota tecnica: la rete della sessione lascia passare curl ma lo strumento WebFetch non risolve il dominio; le connessioni al sito a volte cadono, ritentare.
