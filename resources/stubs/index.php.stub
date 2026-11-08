@@ -1,0 +1,16 @@
+<?php
+
+use Illuminate\Http\Request;
+
+define('LARAVEL_START', microtime(true));
+
+// L'applicazione sta in ../chianucci_app, fuori dalla cartella pubblica del dominio.
+if (file_exists($maintenance = __DIR__.'/../chianucci_app/storage/framework/maintenance.php')) {
+    require $maintenance;
+}
+
+require __DIR__.'/../chianucci_app/vendor/autoload.php';
+
+$app = require_once __DIR__.'/../chianucci_app/bootstrap/app.php';
+$app->usePublicPath(__DIR__);
+$app->handleRequest(Request::capture());

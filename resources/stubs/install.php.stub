@@ -1,0 +1,74 @@
+<?php
+// Installazione una tantum del sito CHIANUCCI. Si cancella da solo a lavoro finito.
+// Il codice di installazione non è scritto qui: c'è solo la sua impronta (hash).
+const TOKEN_HASH = '{{TOKEN_HASH}}';
+$appDir = __DIR__.'/../chianucci_app';
+
+function page(string $body): void
+{
+    header('Content-Type: text/html; charset=utf-8');
+    echo '<!DOCTYPE html><meta charset="utf-8"><meta name="robots" content="noindex"><title>Installazione CHIANUCCI</title>'
+        .'<body style="font-family:sans-serif;max-width:40rem;margin:3rem auto;padding:0 1rem">'.$body;
+    exit;
+}
+
+if (! is_dir($appDir) || ! is_file($appDir.'/.env')) {
+    page('<h1>Prima di iniziare</h1><p>Manca il file <code>.env</code> nella cartella <code>chianucci_app</code>. Copia <code>.env.example</code> in <code>.env</code>, compila i dati del database e della posta, poi ricarica questa pagina.</p>');
+}
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    page('<h1>Installazione CHIANUCCI</h1><form method="post">'
+        .'<p><label>Codice di installazione<br><input name="token" required style="width:100%"></label></p>'
+        .'<p><label>Email amministratore<br><input type="email" name="email" required style="width:100%"></label></p>'
+        .'<p><label>Password amministratore (almeno 12 caratteri)<br><input type="password" name="password" minlength="12" required style="width:100%"></label></p>'
+        .'<p><button>Installa</button></p></form>');
+}
+
+if (! hash_equals(TOKEN_HASH, hash('sha256', (string) ($_POST['token'] ?? '')))) {
+    http_response_code(403);
+    page('<h1>Codice non valido</h1>');
+}
+$email = filter_var($_POST['email'] ?? '', FILTER_VALIDATE_EMAIL);
+$password = (string) ($_POST['password'] ?? '');
+if (! $email || strlen($password) < 12) {
+    page('<h1>Dati non validi</h1><p>Inserisci un\'email valida e una password di almeno 12 caratteri.</p>');
+}
+
+try {
+    require $appDir.'/vendor/autoload.php';
+
+    // Chiave dell'applicazione: si crea una volta sola e si scrive nel .env.
+    $env = file_get_contents($appDir.'/.env');
+    if (! preg_match('/^APP_KEY=base64:.+$/m', $env)) {
+        $key = 'base64:'.base64_encode(random_bytes(32));
+        $env = preg_match('/^APP_KEY=.*$/m', $env) ? preg_replace('/^APP_KEY=.*$/m', 'APP_KEY='.$key, $env) : $env."\nAPP_KEY=$key\n";
+        file_put_contents($appDir.'/.env', $env);
+    }
+
+    $app = require $appDir.'/bootstrap/app.php';
+    $app->usePublicPath(__DIR__);
+    $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+    $kernel->bootstrap();
+
+    $log = '';
+    foreach ([
+        ['migrate', ['--force' => true]],
+        ['db:seed', ['--class' => 'Database\\Seeders\\PageSeeder', '--force' => true]],
+        ['site:load-catalog', ['path' => $appDir.'/database/catalog.json']],
+    ] as [$command, $args]) {
+        if ($kernel->call($command, $args) !== 0) {
+            throw new RuntimeException("Il passaggio '$command' è fallito:\n".$kernel->output());
+        }
+        $log .= $command.": ok\n";
+    }
+
+    App\Models\User::updateOrCreate(['email' => $email], [
+        'name' => 'Amministratore', 'password' => $password, 'role' => App\Models\User::ROLE_ADMIN,
+    ]);
+} catch (Throwable $e) {
+    http_response_code(500);
+    page('<h1>Installazione non riuscita</h1><pre>'.htmlspecialchars($e->getMessage()).'</pre><p>Il file install.php non è stato cancellato: correggi il problema e riprova.</p>');
+}
+
+@unlink(__FILE__);
+page('<h1>Installazione completata</h1><pre>'.htmlspecialchars($log).'</pre><p>Accedi al pannello su <a href="/admin">/admin</a>: al primo accesso ti verrà chiesto di attivare la verifica in due passaggi.</p><p>Il file install.php è stato cancellato.</p>');
