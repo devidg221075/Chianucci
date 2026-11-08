@@ -10,4 +10,7 @@
 
 @section('content')
     {!! $page->html !!}
+    @if ($isContact ?? false)
+        @include('contact.form')
+    @endif
 @endsection

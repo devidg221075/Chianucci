@@ -16,4 +16,16 @@ return [
         'code' => 'Code', 'details' => 'Details', 'request_quote' => 'Request a quote', 'quote_note' => 'Quotes and orders are reserved for registered, approved customers.',
         'back' => 'Back to the catalogue', 'titles' => 'Available titles',
     ],
+
+    'contact' => [
+        'name' => 'Full name', 'company' => 'Company', 'email' => 'Email', 'phone' => 'Phone', 'message' => 'Message',
+        'consent' => 'I accept the processing of my personal data according to the Privacy Policy.', 'send' => 'Send request',
+        'sent' => 'Thank you, your request has been sent. We will reply as soon as possible.',
+        'errors' => [
+            'required' => 'Please fill in this field.', 'email' => 'Please enter a valid email address.',
+            'accepted' => 'To send the request you must accept the data processing.',
+            'max' => 'The text is too long.', 'regex' => 'The text contains invalid characters.',
+            'string' => 'The value is not valid.',
+        ],
+    ],
 ];

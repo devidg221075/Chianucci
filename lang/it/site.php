@@ -16,4 +16,16 @@ return [
         'code' => 'Codice', 'details' => 'Scheda', 'request_quote' => 'Richiedi preventivo', 'quote_note' => 'Preventivi e ordini sono riservati ai clienti registrati e approvati.',
         'back' => 'Torna al catalogo', 'titles' => 'Titoli disponibili',
     ],
+
+    'contact' => [
+        'name' => 'Nome e cognome', 'company' => 'Azienda', 'email' => 'Email', 'phone' => 'Telefono', 'message' => 'Messaggio',
+        'consent' => 'Accetto il trattamento dei dati personali secondo la Privacy Policy.', 'send' => 'Invia richiesta',
+        'sent' => 'Grazie, la tua richiesta è stata inviata. Ti risponderemo al più presto.',
+        'errors' => [
+            'required' => 'Compila questo campo.', 'email' => 'Inserisci un indirizzo email valido.',
+            'accepted' => 'Per inviare la richiesta devi accettare il trattamento dei dati.',
+            'max' => 'Il testo inserito è troppo lungo.', 'regex' => 'Il testo contiene caratteri non validi.',
+            'string' => 'Il valore inserito non è valido.',
+        ],
+    ],
 ];

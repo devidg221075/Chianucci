@@ -11,6 +11,10 @@ class PageController extends Controller
     {
         $page = Page::where('locale', $locale)->where('slug', $slug ?? 'home')->firstOrFail();
 
-        return view('pages.show', ['page' => $page, 'currentSlug' => $slug]);
+        return view('pages.show', [
+            'page' => $page,
+            'currentSlug' => $slug,
+            'isContact' => $slug === config("site.pages.contatti.$locale"),
+        ]);
     }
 }
