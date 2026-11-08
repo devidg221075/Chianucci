@@ -34,7 +34,7 @@ class PageSeeder extends Seeder
     {
         return <<<HTML
 <section class="py-14 px-6"><div class="mx-auto max-w-5xl">
-<p class="text-xs font-semibold uppercase tracking-widest text-oro">{$eyebrow}</p>
+<p class="text-xs font-semibold uppercase tracking-widest text-oro-scuro">{$eyebrow}</p>
 <h1 class="mt-2 text-4xl font-bold">{$title}</h1>
 <p class="mt-4 text-lg max-w-3xl">{$body}</p>{$extra}
 </div></section>

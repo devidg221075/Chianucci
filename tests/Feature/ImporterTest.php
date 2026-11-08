@@ -208,4 +208,18 @@ class ImporterTest extends TestCase
         $this->artisan('site:import --retry-sleep=0 --only=redirects')->assertSuccessful();
         $this->assertSame(count($map), \App\Models\Redirect::count(), 'Rilanciato due volte non duplica');
     }
+
+    public function test_categories_get_a_cover_image_from_their_first_product_unless_already_set(): void
+    {
+        $this->fakeSite();
+
+        $this->artisan('site:import --retry-sleep=0 --only=catalog')->assertSuccessful();
+
+        $category = \App\Models\Category::where('slug', 'corda')->firstOrFail();
+        $this->assertSame('products/corda-100-1.jpg', $category->image_path);
+
+        $category->update(['image_path' => 'categories/scelta-a-mano.jpg']);
+        $this->artisan('site:import --retry-sleep=0 --only=catalog')->assertSuccessful();
+        $this->assertSame('categories/scelta-a-mano.jpg', $category->fresh()->image_path);
+    }
 }

@@ -16,6 +16,10 @@ use Filament\Tables\Table;
 
 class ProductResource extends Resource
 {
+    protected static ?string $modelLabel = 'prodotto';
+
+    protected static ?string $pluralModelLabel = 'prodotti';
+
     protected static ?string $model = Product::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;

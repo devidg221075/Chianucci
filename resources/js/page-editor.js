@@ -1,8 +1,9 @@
 import grapesjs from 'grapesjs';
 import 'grapesjs/dist/css/grapes.min.css';
+import 'font-awesome/css/font-awesome.min.css';
 
 document.addEventListener('alpine:init', () => {
-    window.Alpine.data('pageEditor', ({ html, css }) => ({
+    window.Alpine.data('pageEditor', ({ html, css, siteCss }) => ({
         html,
         css,
         editor: null,
@@ -12,11 +13,13 @@ document.addEventListener('alpine:init', () => {
                 fromElement: false,
                 height: '75vh',
                 storageManager: false,
+                cssIcons: '', // niente Font Awesome da CDN: arriva dal pacchetto locale
+                telemetry: false, // niente dati inviati a servizi esterni
                 avoidInlineStyle: true,
                 components: this.html || '',
                 style: this.css || '',
                 blockManager: { appendTo: this.$refs.blocks },
-                canvas: { styles: ['/build/assets/site.css'] },
+                canvas: { styles: siteCss ? [siteCss] : [] },
             });
 
             const bm = this.editor.Blocks;

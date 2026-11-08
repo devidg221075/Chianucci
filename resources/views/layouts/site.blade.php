@@ -46,10 +46,10 @@
     </header>
     <main class="flex-1">@yield('content')</main>
     <x-footer />
-    <div data-cookie-banner x-data="{ show: false }" x-init="try { show = ! localStorage.getItem('cookie-notice') } catch (e) { show = true }" x-show="show" x-cloak
+    <div data-cookie-banner x-data="cookieNotice" x-show="show" x-cloak
          class="fixed bottom-0 inset-x-0 z-50 bg-viola text-avorio text-sm p-4 flex flex-wrap items-center justify-center gap-4" role="region" aria-label="Cookie">
         <p>{{ __('site.cookie.text') }} <a class="underline" href="{{ SiteUrls::page('privacy', $locale) }}">{{ __('site.cookie.link') }}</a></p>
-        <button type="button" class="btn-secondario !text-avorio !py-1" @click="try { localStorage.setItem('cookie-notice', '1') } catch (e) {} show = false">{{ __('site.cookie.ok') }}</button>
+        <button type="button" class="btn-secondario !text-avorio !py-1" @click="dismiss">{{ __('site.cookie.ok') }}</button>
     </div>
 </body>
 </html>

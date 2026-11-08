@@ -79,4 +79,14 @@ class AdminAccessTest extends TestCase
             ->assertFormFieldDoesNotExist('price')
             ->assertFormFieldDoesNotExist('prezzo');
     }
+
+    public function test_admin_avatar_is_generated_locally_without_external_services(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'name' => 'Maria Rossi']);
+
+        $url = app(\App\Filament\Support\InitialsAvatarProvider::class)->get($admin);
+
+        $this->assertStringStartsWith('data:image/svg+xml;base64,', $url);
+        $this->assertStringContainsString('>M<', base64_decode(substr($url, strlen('data:image/svg+xml;base64,'))));
+    }
 }

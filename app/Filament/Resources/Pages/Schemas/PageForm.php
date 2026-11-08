@@ -13,7 +13,7 @@ class PageForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema->components([
+        return $schema->columns(1)->components([
             Section::make('Pagina')->columns(2)->schema([
                 Select::make('locale')->label('Lingua')->options(['it' => 'Italiano', 'en' => 'English'])->required(),
                 TextInput::make('slug')->label('Indirizzo (slug)')->required(),
@@ -22,7 +22,7 @@ class PageForm
                 TextInput::make('meta_description')->label('Descrizione per Google')->maxLength(320)->columnSpanFull(),
             ]),
             Section::make('Contenuto (trascina i blocchi)')->schema([
-                PageEditor::make('html')->label('')->columnSpanFull(),
+                PageEditor::make('html')->hiddenLabel()->columnSpanFull(),
                 Hidden::make('css'),
             ]),
         ]);

@@ -9,6 +9,7 @@
 @theme {
     --color-viola: #2A1B6D;
     --color-oro: #BD9F69;
+    --color-oro-scuro: #7A5F1F; /* oro per i testi: contrasto 5,4:1 su avorio */
     --color-avorio: #F7F3E8;
     --color-bianco: #FFFFFF;
     --color-antracite: #2B2B2B;

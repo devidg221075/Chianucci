@@ -13,7 +13,7 @@ class CategoryForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema->components([
+        return $schema->columns(1)->components([
             Section::make('Categoria')->columns(2)->schema([
                 TextInput::make('slug')->required()->unique(ignoreRecord: true),
                 TextInput::make('sort')->label('Ordine')->numeric()->default(0),

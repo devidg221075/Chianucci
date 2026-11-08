@@ -15,7 +15,7 @@ class ProductForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema->components([
+        return $schema->columns(1)->components([
             Section::make('Dati prodotto')->columns(2)->schema([
                 TextInput::make('code')->label('Codice articolo')->required()->unique(ignoreRecord: true),
                 Select::make('category_id')->label('Categoria')->relationship('category', 'slug')->required(),

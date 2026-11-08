@@ -16,6 +16,10 @@ use Filament\Tables\Table;
 
 class PageResource extends Resource
 {
+    protected static ?string $modelLabel = 'pagina';
+
+    protected static ?string $pluralModelLabel = 'pagine';
+
     protected static ?string $model = Page::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;

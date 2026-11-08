@@ -16,6 +16,10 @@ use Filament\Tables\Table;
 
 class CategoryResource extends Resource
 {
+    protected static ?string $modelLabel = 'categoria';
+
+    protected static ?string $pluralModelLabel = 'categorie';
+
     protected static ?string $model = Category::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;

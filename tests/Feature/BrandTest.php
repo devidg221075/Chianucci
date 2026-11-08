@@ -36,4 +36,35 @@ class BrandTest extends TestCase
             hash('sha256', $original)
         );
     }
+
+    public function test_gold_is_never_used_as_text_color_on_light_backgrounds(): void
+    {
+        // #BD9F69 su avorio/bianco ha contrasto 2,3:1 (minimo WCAG AA: 4,5:1): per i testi si usa "oro-scuro".
+        $files = array_merge(
+            glob(resource_path('views/*/*.blade.php')),
+            glob(resource_path('views/*.blade.php')),
+            glob(resource_path('views/*/*/*.blade.php')),
+            [base_path('database/seeders/PageSeeder.php'), resource_path('js/page-editor.js')]
+        );
+        $this->assertNotEmpty($files);
+        foreach ($files as $file) {
+            $this->assertDoesNotMatchRegularExpression('/(?<![\w:-])text-oro(?![\w-])/', file_get_contents($file), basename($file));
+        }
+    }
+
+    public function test_dark_gold_text_token_meets_contrast_on_ivory(): void
+    {
+        $css = file_get_contents(resource_path('css/site.css'));
+        preg_match('/--color-oro-scuro:\s*(#[0-9A-Fa-f]{6})/', $css, $m);
+        $this->assertNotEmpty($m, 'token oro-scuro mancante');
+
+        $lum = function (string $hex): float {
+            $c = array_map(fn ($v) => ($v /= 255) <= 0.03928 ? $v / 12.92 : (($v + 0.055) / 1.055) ** 2.4, sscanf($hex, '#%02x%02x%02x'));
+
+            return 0.2126 * $c[0] + 0.7152 * $c[1] + 0.0722 * $c[2];
+        };
+        $ratio = (max($lum('#F7F3E8'), $lum($m[1])) + 0.05) / (min($lum('#F7F3E8'), $lum($m[1])) + 0.05);
+
+        $this->assertGreaterThanOrEqual(4.5, $ratio);
+    }
 }

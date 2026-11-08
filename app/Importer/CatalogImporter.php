@@ -51,6 +51,20 @@ class CatalogImporter
                 }
             }
         }
+
+        $this->assignCategoryImages();
+    }
+
+    /** Foto della categoria per il mega menu: la prima immagine del suo primo prodotto, se non è già stata scelta. */
+    private function assignCategoryImages(): void
+    {
+        foreach (Category::whereNull('image_path')->get() as $category) {
+            $path = ProductImage::whereIn('product_id', $category->products()->select('id'))
+                ->orderBy('product_id')->orderBy('sort')->value('path');
+            if ($path) {
+                $category->update(['image_path' => $path]);
+            }
+        }
     }
 
     private function alreadyDone(string $url): bool
