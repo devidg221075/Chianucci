@@ -46,6 +46,76 @@ HTML;
         return '<section class="py-10 px-6"><div class="mx-auto max-w-5xl"><h2 class="text-2xl font-bold">'.$title.'</h2><p class="mt-3 max-w-3xl">'.$body.'</p></div></section>';
     }
 
+    /** Home sul modello della tavola Natural Luxury 03; le foto sono quelle del vecchio sito (segnaposto da confermare). */
+    private function home(string $l): array
+    {
+        $it = $l === 'it';
+        $u = fn (string $key) => $key === 'catalogo' ? ($it ? '/it/catalogo' : '/en/catalogue') : "/$l/".config("site.pages.$key.$l");
+        $t = fn (string $a, string $b) => $it ? $a : $b;
+
+        $tile = fn (string $img, string $alt, string $name, string $href) => '<a href="'.$href.'" class="group block bg-bianco border border-oro/30 hover:border-oro">'
+            .'<img src="/images/home/'.$img.'.jpg" alt="'.$alt.'" class="h-56 w-full object-cover">'
+            .'<span class="block p-4 font-semibold text-viola group-hover:text-oro-scuro">'.$name.'</span></a>';
+
+        $value = fn (string $icon, string $title, string $text) => '<div class="flex items-center gap-4"><img src="/images/icons/'.$icon.'.svg" alt="" class="h-10 w-10 shrink-0">'
+            .'<div><h3 class="text-base font-semibold">'.$title.'</h3><p class="text-sm">'.$text.'</p></div></div>';
+
+        $html = '<section class="relative isolate overflow-hidden bg-antracite">'
+            .'<img src="/images/home/hero.jpg" alt="'.$t('Catene d\'oro in lavorazione presso Chianucci', 'Gold chains being made at Chianucci').'" class="absolute inset-0 -z-10 h-full w-full object-cover">'
+            .'<div class="absolute inset-0 -z-10 bg-linear-to-r from-antracite/90 via-antracite/60 to-transparent"></div>'
+            .'<div class="mx-auto max-w-6xl px-6 py-24 md:py-36"><div class="max-w-xl">'
+            .'<p class="text-xs font-semibold uppercase tracking-widest text-oro-chiaro">'.$t('Manifattura orafa dal 1973', 'Goldsmith manufacturer since 1973').'</p>'
+            .'<h1 class="mt-3 text-4xl md:text-6xl font-bold !text-avorio">'.$t('L\'arte della manifattura orafa.', 'The art of goldsmith manufacturing.').'</h1>'
+            .'<p class="mt-5 text-lg text-avorio">'.$t('Produzione di catene in oro e argento per aziende, grossisti e professionisti del settore. Qualità, competenza artigianale e affidabilità, dal 1973.', 'Gold and silver chains for companies, wholesalers and industry professionals. Quality, artisan expertise and reliability, since 1973.').'</p>'
+            .'<p class="mt-8 flex flex-wrap gap-4"><a href="'.$u('area-clienti').'" class="btn-oro">'.$t('Richiedi un preventivo', 'Request a quote').'</a>'
+            .'<a href="'.$u('catalogo').'" class="btn-chiaro">'.$t('Catalogo professionale', 'Professional catalogue').'</a></p>'
+            .'</div></div></section>'
+
+            .'<section class="bg-bianco border-b border-oro/30"><div class="mx-auto max-w-6xl px-6 py-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">'
+            .$value('diamante', 'Made in Italy', $t('Produzione interamente italiana', 'Entirely Italian production'))
+            .$value('ingranaggio', $t('Competenza artigianale', 'Artisan expertise'), $t('Know-how orafo e tecnologie evolute', 'Goldsmith know-how and advanced technology'))
+            .$value('medaglia', $t('Qualità certificata', 'Certified quality'), $t('Controlli rigorosi in ogni fase', 'Rigorous checks at every stage'))
+            .$value('persone', 'Partner B2B', $t('Soluzioni su misura per aziende, grossisti e marchi', 'Tailor-made solutions for companies, wholesalers and brands'))
+            .'</div></section>'
+
+            .'<section class="py-16 px-6"><div class="mx-auto max-w-6xl grid gap-10 md:grid-cols-2 items-center">'
+            .'<img src="/images/home/atelier.jpg" alt="'.$t('Mani di un\'orafa al lavoro su una catena d\'argento', 'A goldsmith\'s hands working on a silver chain').'" class="w-full h-80 object-cover">'
+            .'<div><p class="text-xs font-semibold uppercase tracking-widest text-oro-scuro">'.$t('L\'atelier Chianucci', 'The Chianucci atelier').'</p>'
+            .'<h2 class="mt-2 text-3xl font-bold">'.$t('Competenza artigianale, precisione industriale.', 'Artisan expertise, industrial precision.').'</h2>'
+            .'<p class="mt-4">'.$t('Un atelier italiano dove l\'esperienza orafa si unisce a tecnologie avanzate per realizzare catene e componenti di alta qualità, con la flessibilità e l\'affidabilità richieste dal mercato internazionale.', 'An Italian atelier where goldsmith experience meets advanced technology to make high-quality chains and components, with the flexibility and reliability the international market requires.').'</p>'
+            .'<p class="mt-6"><a href="'.$u('manifattura').'" class="btn-secondario">'.$t('Scopri la manifattura', 'Discover our manufacturing').'</a></p></div></div></section>'
+
+            .'<section class="py-16 px-6 bg-bianco"><div class="mx-auto max-w-6xl">'
+            .'<p class="text-xs font-semibold uppercase tracking-widest text-oro-scuro">'.$t('Le lavorazioni', 'Our processes').'</p>'
+            .'<h2 class="mt-2 text-3xl font-bold max-w-2xl">'.$t('Un processo completo, una qualità senza compromessi.', 'A complete process, uncompromising quality.').'</h2>'
+            .'<div class="mt-8 grid gap-6 md:grid-cols-3">'
+            .$tile('preparazione', $t('Macchinario per la preparazione dei componenti', 'Machinery preparing components'), $t('Preparazione', 'Preparation'), $u('preparazione'))
+            .$tile('saldatura', $t('Saldatura a fiamma di una catena', 'Flame welding of a chain'), $t('Saldatura', 'Welding'), $u('saldatura'))
+            .$tile('pulitura', $t('Pulitura e lucidatura di un gioiello', 'Cleaning and polishing a piece'), $t('Pulitura e lucidatura', 'Cleaning and polishing'), $u('pulitura'))
+            .'</div></div></section>'
+
+            .'<section class="py-16 px-6"><div class="mx-auto max-w-6xl grid gap-10 md:grid-cols-2 items-center">'
+            .'<div><p class="text-xs font-semibold uppercase tracking-widest text-oro-scuro">'.$t('La nostra storia', 'Our story').'</p>'
+            .'<h2 class="mt-2 text-3xl font-bold">'.$t('Dal 1973, tradizione, innovazione e affidabilità.', 'Since 1973, tradition, innovation and reliability.').'</h2>'
+            .'<p class="mt-4">'.$t('Oltre cinquant\'anni di esperienza nella manifattura orafa italiana, con uno sguardo rivolto al futuro, ai nuovi materiali, alla sostenibilità e alle esigenze dei nostri partner. Siamo ad Arezzo, cuore di una storica tradizione orafa.', 'Over fifty years of experience in Italian goldsmith manufacturing, with an eye on the future, new materials, sustainability and our partners\' needs. We are in Arezzo, the heart of a historic goldsmith tradition.').'</p>'
+            .'<p class="mt-6"><a href="'.$u('azienda').'" class="btn-secondario">'.$t('Scopri la nostra storia', 'Discover our story').'</a></p></div>'
+            .'<img src="/images/home/squadra.jpg" alt="'.$t('Il team di Chianucci in laboratorio', 'The Chianucci team in the workshop').'" class="w-full h-80 object-cover"></div></section>'
+
+            .'<div id="categorie-home"></div>'
+
+            .'<section class="bg-viola"><div class="mx-auto max-w-6xl px-6 py-14 grid gap-6 md:grid-cols-[1fr_auto] items-center">'
+            .'<div><p class="text-xs font-semibold uppercase tracking-widest text-oro-chiaro">'.$t('Area riservata B2B', 'Reserved B2B area').'</p>'
+            .'<h2 class="mt-2 text-3xl font-bold !text-avorio">'.$t('Catalogo professionale', 'Professional catalogue').'</h2>'
+            .'<p class="mt-3 text-avorio max-w-2xl">'.$t('Accedi alla nostra selezione completa di prodotti, schede tecniche e soluzioni personalizzate. Preventivi e ordini sono riservati ai clienti registrati e approvati.', 'Access our full selection of products, technical sheets and tailored solutions. Quotes and orders are reserved for registered, approved customers.').'</p></div>'
+            .'<p><a href="'.$u('area-clienti').'" class="btn-oro">'.$t('Richiedi l\'accesso', 'Request access').'</a></p></div></section>';
+
+        return [
+            'title' => $t('Manifattura orafa dal 1973', 'Goldsmith manufacturer since 1973'),
+            'meta' => $t('CHIANUCCI MAURIZIO: catene, componenti e gioielli in oro e argento per professionisti del settore orafo, ad Arezzo dal 1973.', 'CHIANUCCI MAURIZIO: gold and silver chains, components and jewellery for goldsmith professionals, in Arezzo since 1973.'),
+            'html' => $html,
+        ];
+    }
+
     private function pages(string $l): array
     {
         $it = $l === 'it';
@@ -69,23 +139,7 @@ HTML;
 
         $pages = [];
 
-        $pages['home'] = [
-            'title' => $it ? 'Manifattura orafa dal 1973' : 'Goldsmith manufacturer since 1973',
-            'meta' => $it ? 'CHIANUCCI MAURIZIO: catene, componenti e gioielli in oro e argento per professionisti del settore orafo, ad Arezzo dal 1973.' : 'CHIANUCCI MAURIZIO: gold and silver chains, components and jewellery for goldsmith professionals, in Arezzo since 1973.',
-            'html' => $this->section(
-                $it ? 'Manifattura orafa dal 1973' : 'Goldsmith manufacturer since 1973',
-                $it ? 'L\'eccellenza prende forma.' : 'Excellence takes shape.',
-                $it ? 'Produzione di catene in oro e argento. Tradizione artigianale, qualità e competenza al servizio dei professionisti del settore.' : 'Production of gold and silver chains. Artisan tradition, quality and expertise at the service of industry professionals.',
-                $cta
-            )
-            .'<section class="py-10 px-6 bg-bianco"><div class="mx-auto max-w-5xl grid gap-6 md:grid-cols-4 text-center">'
-            .'<div><h3 class="text-base font-semibold">'.($it ? 'Manifattura italiana' : 'Italian manufacturing').'</h3></div>'
-            .'<div><h3 class="text-base font-semibold">'.($it ? 'Competenza produttiva' : 'Production expertise').'</h3></div>'
-            .'<div><h3 class="text-base font-semibold">'.($it ? 'Qualità certificata' : 'Certified quality').'</h3></div>'
-            .'<div><h3 class="text-base font-semibold">'.($it ? 'Partner B2B' : 'B2B partners').'</h3></div></div></section>'
-            .$this->block($it ? 'Dal 1973, ad Arezzo' : 'Since 1973, in Arezzo', $it ? 'Oltre cinquant\'anni di esperienza nella manifattura orafa italiana, con uno sguardo rivolto al futuro, ai nuovi materiali e alle esigenze dei nostri partner.' : 'Over fifty years of experience in Italian goldsmith manufacturing, with an eye on the future, new materials and our partners\' needs.')
-            .'<section class="py-10 px-6 bg-viola text-avorio"><div class="mx-auto max-w-5xl"><h2 class="text-2xl font-bold !text-avorio">'.($it ? 'Area Clienti' : 'Customer Area').'</h2><p class="mt-3 max-w-3xl">'.($it ? 'Richiedi l\'accesso per inviare richieste di preventivo e consultare il loro stato.' : 'Request access to send quote requests and follow their status.').'</p><p class="mt-4"><a href="'.$area.'" class="btn-secondario !text-avorio">'.($it ? 'Scopri l\'Area Clienti' : 'Discover the Customer Area').'</a></p></div></section>',
-        ];
+        $pages['home'] = $this->home($l);
 
         $pages['azienda'] = [
             'title' => $it ? 'Azienda' : 'Company',

@@ -9,6 +9,7 @@
 @theme {
     --color-viola: #2A1B6D;
     --color-oro: #BD9F69;
+    --color-oro-chiaro: #D8C08C; /* oro per i testi su fondi scuri */
     --color-oro-scuro: #7A5F1F; /* oro per i testi: contrasto 5,4:1 su avorio */
     --color-avorio: #F7F3E8;
     --color-bianco: #FFFFFF;
@@ -36,7 +37,9 @@ h1, h2, h3, .nav-voce {
 }
 
 .btn-primario,
-.btn-secondario {
+.btn-secondario,
+.btn-oro,
+.btn-chiaro {
     display: inline-flex;
     align-items: center;
     gap: .5rem;
@@ -51,3 +54,8 @@ h1, h2, h3, .nav-voce {
 .btn-primario:hover { background: #1d1250; }
 .btn-secondario { border: 1px solid var(--oro); color: var(--viola); background: transparent; }
 .btn-secondario:hover { background: var(--oro); color: #fff; }
+
+.btn-oro { background: var(--oro); color: var(--antracite); }
+.btn-oro:hover { background: #d0b57e; }
+.btn-chiaro { border: 1px solid #fff; color: #fff; background: transparent; }
+.btn-chiaro:hover { background: #fff; color: var(--viola); }

@@ -9,7 +9,7 @@
 @endpush
 
 @section('content')
-    {!! $page->html !!}
+    {!! str_replace('<div id="categorie-home"></div>', view('home.categories')->render(), $page->html) !!}
     @if ($isContact ?? false)
         @include('contact.form')
     @endif

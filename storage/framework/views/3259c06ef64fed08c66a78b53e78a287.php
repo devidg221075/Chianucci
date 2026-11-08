@@ -7,7 +7,7 @@
 <?php $__env->stopPush(); ?>
 
 <?php $__env->startSection('content'); ?>
-    <?php echo $page->html; ?>
+    <?php echo str_replace('<div id="categorie-home"></div>', view('home.categories')->render(), $page->html); ?>
 
     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isContact ?? false): ?>
         <?php echo $__env->make('contact.form', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>

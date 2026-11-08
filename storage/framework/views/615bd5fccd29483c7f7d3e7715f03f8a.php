@@ -1,5 +1,5 @@
 <?php $c = config('site.company'); ?>
-<footer class="bg-viola text-avorio mt-16">
+<footer class="bg-viola text-avorio">
     <div class="mx-auto max-w-6xl px-6 py-10 grid gap-8 md:grid-cols-3 text-sm">
         <div>
             <img src="<?php echo e(asset('brand/chianucci-bianco.svg')); ?>" alt="<?php echo e($c['name']); ?>" class="h-12 mb-4">
