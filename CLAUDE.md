@@ -37,4 +37,5 @@
 - Categorie/famiglie prodotto (IT): anelli, bizantina, calandra, colorati, collane, corda, doppia-tripla, elastico, elementi, fantasia, forzatina, grumetta, maglia-marina, molla, nonna-fantasia, palmie, pietre-zirconi, rettangolare, rolo, rosetta, schiava, scomparsa, traversino.
 - Documenti PDF pubblici da conservare: certificato Synesgy (15/05/2024), rendiconto aiuti di Stato.
 - Il sito attuale ha pagine di registrazione, my-account, carrello e checkout WooCommerce.
+- Importazione completata (9/11/2026): 377 prodotti IT, 23 categorie con gli stessi numeri del sito vecchio. Solo 345 hanno traduzione EN: 31 pagine inglesi hanno un indirizzo diverso da quello italiano (es. oval-rolo-N, beat-forzatina-N, square-bizantina-N) e una è andata in timeout; per quei prodotti il sito mostra l'italiano. Da abbinare a mano o con una mappa dal backoffice. I testi delle vecchie pagine sono in storage/app/private/legacy-pages/ per la revisione.
 - Nota tecnica: la rete della sessione lascia passare curl ma lo strumento WebFetch non risolve il dominio; le connessioni al sito a volte cadono, ritentare.
