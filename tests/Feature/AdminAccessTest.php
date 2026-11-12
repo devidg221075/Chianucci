@@ -69,6 +69,22 @@ class AdminAccessTest extends TestCase
         $this->assertAuthenticatedAs($admin);
     }
 
+    public function test_admin_screens_never_show_raw_translation_keys(): void
+    {
+        app()->setLocale('it');
+        $admin = $this->userWithRole('admin', true);
+
+        $pages = [$this->get('/admin/login')->assertOk()->getContent()];
+        foreach (['/admin', '/admin/products', '/admin/categories', '/admin/pages'] as $url) {
+            $pages[] = $this->actingAs($admin)->get($url)->assertOk()->getContent();
+        }
+
+        foreach ($pages as $html) {
+            $this->assertDoesNotMatchRegularExpression('/filament[a-z-]*::[a-z_\/.-]+/', $html);
+        }
+        $this->assertStringNotContainsString('filamentphp', implode('', $pages), 'Il riquadro promozionale di Filament non va mostrato al cliente');
+    }
+
     public function test_product_form_has_no_price_field(): void
     {
         $admin = $this->userWithRole('admin', true);

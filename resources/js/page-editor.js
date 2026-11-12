@@ -1,4 +1,5 @@
 import grapesjs from 'grapesjs';
+import it from 'grapesjs/locale/it';
 import 'grapesjs/dist/css/grapes.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
@@ -15,6 +16,7 @@ document.addEventListener('alpine:init', () => {
                 storageManager: false,
                 cssIcons: '', // niente Font Awesome da CDN: arriva dal pacchetto locale
                 telemetry: false, // niente dati inviati a servizi esterni
+                i18n: { locale: 'it', detectLocale: false, localeFallback: 'en', messages: { it } }, // comandi dell'editor in italiano
                 avoidInlineStyle: true,
                 components: this.html || '',
                 style: this.css || '',
