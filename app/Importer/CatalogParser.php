@@ -29,6 +29,17 @@ class CatalogParser
         $canonical = $xp->query("//link[@rel='canonical']/@href")->item(0)?->nodeValue ?? '';
         preg_match('#/prodotto/([^/]+)/?#', $canonical, $slug);
 
+        // Sul sito vecchio l'indirizzo cambia a volte tra le lingue (oval-rolo-1 / rolo-ovale-1):
+        // il selettore lingua della pagina porta alla scheda corrispondente nell'altra lingua.
+        $other = $locale === 'it' ? 'en' : 'it';
+        $counterpart = null;
+        foreach ($xp->query("//a[contains(@href,'/$other/prodotto/')]/@href") as $href) {
+            if (preg_match("#/$other/prodotto/([^/?\\#]+)#", $href->nodeValue, $found)) {
+                $counterpart = $found[1];
+                break;
+            }
+        }
+
         $categoryLink = $xp->query("//*[contains(@class,'posted_in')]//a")->item(0);
         preg_match('#categoria-prodotto/([^/]+)/?#', $categoryLink?->getAttribute('href') ?? '', $cat);
 
@@ -52,6 +63,8 @@ class CatalogParser
             'name' => $name,
             'code' => $values['article'] ?? $name,
             'slug' => $slug[1] ?? null,
+            'counterpart_slug' => $counterpart,
+            'complete' => stripos($html, '</html>') !== false,
             'weight_g' => $this->number($values['weight_g'] ?? null),
             'length_cm' => $this->number($values['length_cm'] ?? null),
             'link_mm' => $this->number($values['link_mm'] ?? null),

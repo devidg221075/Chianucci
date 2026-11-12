@@ -108,6 +108,21 @@ class CatalogPagesTest extends TestCase
         $this->get('/it/catalogue')->assertNotFound();
     }
 
+    public function test_language_switch_stays_on_the_catalogue_and_on_the_product(): void
+    {
+        $product = $this->makeProduct($this->makeCategory('corda', 'Corda'), 'C1', 'Corda uno', [], true);
+        $slug = $product->translations->firstWhere('locale', 'it')->slug ?? $product->translations()->where('locale', 'it')->value('slug');
+
+        $this->get('/it/catalogo')->assertOk()->assertSee('hreflang="en" class', false)
+            ->assertSee('<a href="'.url('/en/catalogue').'" hreflang="en"', false);
+        $this->get('/it/catalogo?categoria=corda')->assertOk()
+            ->assertSee('<a href="'.url('/en/catalogue').'?categoria=corda" hreflang="en"', false);
+        $this->get("/it/prodotto/$slug")->assertOk()
+            ->assertSee('<a href="'.url("/en/prodotto/$slug-en").'" hreflang="en"', false);
+        $this->get("/en/prodotto/$slug-en")->assertOk()
+            ->assertSee('<a href="'.url("/it/prodotto/$slug").'" hreflang="it"', false);
+    }
+
     public function test_unknown_product_returns_404(): void
     {
         $this->get('/it/prodotto/non-esiste')->assertNotFound();

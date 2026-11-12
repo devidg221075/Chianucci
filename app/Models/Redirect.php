@@ -39,10 +39,25 @@ class Redirect extends Model
         });
 
         static::saved(function (Redirect $r) {
+            $target = self::normalize($r->to_path);
+
+            // Se seguendo la catena dalla destinazione si torna al punto di partenza c'è un anello:
+            // vince il reindirizzamento appena salvato e si toglie quello vecchio che chiude l'anello.
+            $path = $target;
+            $seen = [];
+            while (! isset($seen[$path]) && ($row = static::where('from_path', $path)->where('id', '!=', $r->id)->first())) {
+                $seen[$path] = true;
+                $path = self::normalize($row->to_path);
+                if ($path === $r->from_path) {
+                    $row->deleteQuietly();
+                    break;
+                }
+            }
+
             // Niente catene: A->B e B->C diventano A->C e B->C.
             static::where('to_path', $r->from_path)->where('id', '!=', $r->id)->update(['to_path' => $r->to_path]);
-            $next = static::where('from_path', self::normalize($r->to_path))->first();
-            if ($next && $next->id !== $r->id) {
+            $next = static::where('from_path', $target)->first();
+            if ($next && $next->id !== $r->id && self::normalize($next->to_path) !== $r->from_path) {
                 $r->updateQuietly(['to_path' => $next->to_path]);
             }
             Cache::forget(self::CACHE_KEY);

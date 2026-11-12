@@ -40,7 +40,7 @@
                     @endif
                 @endforeach
                 <a href="{{ SiteUrls::page('area-clienti', $locale) }}" class="btn-primario">{{ __('site.area_clienti') }}</a>
-                <x-language-switch :locale="$locale" :slug="$currentSlug" />
+                <x-language-switch :locale="$locale" :slug="$currentSlug" :alternates="$seo['alternates'] ?? []" />
             </nav>
         </div>
     </header>

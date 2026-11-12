@@ -105,6 +105,102 @@ class ImporterTest extends TestCase
         Storage::disk('public')->assertExists($product->images()->first()->path);
     }
 
+    public function test_english_page_with_a_different_address_is_matched_through_its_link_to_the_italian_page(): void
+    {
+        $sitemap = '<?xml version="1.0"?><urlset>'
+            .'<url><loc>https://www.chianucci.it/it/prodotto/corda-80/</loc></url>'
+            .'<url><loc>https://www.chianucci.it/en/prodotto/rope-80/</loc></url>'
+            .'</urlset>';
+        // Come sul sito vecchio: nella pagina inglese il selettore lingua porta alla scheda italiana.
+        $english = str_replace(
+            ['/en/prodotto/corda-80', '<body>'],
+            ['/en/prodotto/rope-80', '<body><a href="https://www.chianucci.it/it/prodotto/corda-80/">Italiano</a>'],
+            $this->second($this->fixture('product-corda-100-en.html'), 'en')
+        );
+        $this->assertStringContainsString('/en/prodotto/rope-80', $english);
+
+        $this->fakeSite([
+            '*/product-sitemap.xml' => Http::response($sitemap),
+            '*/en/prodotto/rope-80/' => Http::response($english),
+        ]);
+
+        $this->artisan('site:import --retry-sleep=0 --only=catalog')->assertSuccessful();
+
+        $product = Product::where('code', 'Corda 80')->firstOrFail();
+        $this->assertSame('rope-80', $product->translations()->where('locale', 'en')->value('slug'));
+        $this->assertSame('corda-80', $product->translations()->where('locale', 'it')->value('slug'));
+    }
+
+    public function test_english_page_missing_from_the_sitemap_is_found_through_the_italian_page(): void
+    {
+        $sitemap = '<?xml version="1.0"?><urlset><url><loc>https://www.chianucci.it/it/prodotto/corda-80/</loc></url></urlset>';
+        $italian = str_replace('<body>', '<body><a href="https://www.chianucci.it/en/prodotto/rope-80/">English</a>', $this->second($this->fixture('product-corda-100-it.html'), 'it'));
+        $english = str_replace('/en/prodotto/corda-80', '/en/prodotto/rope-80', $this->second($this->fixture('product-corda-100-en.html'), 'en'));
+
+        $this->fakeSite([
+            '*/product-sitemap.xml' => Http::response($sitemap),
+            '*/it/prodotto/corda-80/' => Http::response($italian),
+            '*/en/prodotto/rope-80/' => Http::response($english),
+        ]);
+
+        $this->artisan('site:import --retry-sleep=0 --only=catalog')->assertSuccessful();
+
+        $this->assertSame(1, Product::count());
+        $this->assertSame('rope-80', Product::firstOrFail()->translations()->where('locale', 'en')->value('slug'));
+    }
+
+    public function test_broken_link_to_an_english_page_is_a_note_not_a_failure(): void
+    {
+        $sitemap = '<?xml version="1.0"?><urlset><url><loc>https://www.chianucci.it/it/prodotto/corda-80/</loc></url></urlset>';
+        $italian = str_replace('<body>', '<body><a href="https://www.chianucci.it/en/prodotto/rope-80/">English</a>', $this->second($this->fixture('product-corda-100-it.html'), 'it'));
+
+        $this->fakeSite([
+            '*/product-sitemap.xml' => Http::response($sitemap),
+            '*/it/prodotto/corda-80/' => Http::response($italian),
+            '*/en/prodotto/rope-80/' => Http::response('Not found', 404),
+        ]);
+
+        $this->artisan('site:import --retry-sleep=0 --only=catalog')
+            ->expectsOutputToContain('Nessuna versione inglese')
+            ->assertSuccessful();
+
+        $this->assertSame(['it'], Product::firstOrFail()->translations()->pluck('locale')->all());
+    }
+
+    public function test_product_that_exists_only_in_english_is_created_and_reported(): void
+    {
+        $sitemap = '<?xml version="1.0"?><urlset>'
+            .'<url><loc>https://www.chianucci.it/it/prodotto/corda-100/</loc></url>'
+            .'<url><loc>https://www.chianucci.it/en/prodotto/corda-100/</loc></url>'
+            .'<url><loc>https://www.chianucci.it/en/prodotto/corda-80/</loc></url>'
+            .'</urlset>';
+        $this->fakeSite(['*/product-sitemap.xml' => Http::response($sitemap)]);
+
+        $this->artisan('site:import --retry-sleep=0 --only=catalog')
+            ->expectsOutputToContain('solo in inglese')
+            ->assertSuccessful();
+
+        $this->assertSame(2, Product::count());
+        $product = Product::where('code', 'Corda 80')->firstOrFail();
+        $this->assertSame(['corda-80', 'corda-80'], $product->translations()->orderBy('locale')->pluck('slug')->all());
+        $this->assertSame(1, \App\Models\Category::count(), 'La categoria inglese non deve creare un doppione');
+        $this->assertNotEmpty($product->images);
+    }
+
+    public function test_half_downloaded_english_page_is_retried_not_turned_into_a_new_product(): void
+    {
+        $sitemap = '<?xml version="1.0"?><urlset>'
+            .'<url><loc>https://www.chianucci.it/it/prodotto/corda-100/</loc></url>'
+            .'<url><loc>https://www.chianucci.it/en/prodotto/corda-80/</loc></url>'
+            .'</urlset>';
+        $half = str_ireplace('</html>', '', $this->second($this->fixture('product-corda-100-en.html'), 'en'));
+        $this->fakeSite(['*/product-sitemap.xml' => Http::response($sitemap), '*/en/prodotto/corda-80/' => Http::response($half)]);
+
+        $this->artisan('site:import --retry-sleep=0 --only=catalog')->assertFailed();
+
+        $this->assertSame(1, Product::count());
+    }
+
     public function test_import_is_idempotent(): void
     {
         $this->fakeSite();

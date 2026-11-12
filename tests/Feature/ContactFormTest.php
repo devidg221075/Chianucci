@@ -45,6 +45,16 @@ class ContactFormTest extends TestCase
         });
     }
 
+    public function test_mail_text_keeps_apostrophes_and_ampersands_readable(): void
+    {
+        $text = (new ContactMessage($this->valid(['azienda' => "Oro & Moda d'Arezzo", 'messaggio' => "L'ordine <urgente> & altro"]), 'it'))->render();
+
+        $this->assertStringContainsString("Oro & Moda d'Arezzo", $text);
+        $this->assertStringContainsString("L'ordine <urgente> & altro", $text);
+        $this->assertStringNotContainsString('&amp;', $text);
+        $this->assertStringNotContainsString('&#039;', $text);
+    }
+
     public function test_missing_consent_or_invalid_email_is_rejected(): void
     {
         $this->post('/it/contatti', $this->valid(['consenso' => null]))->assertSessionHasErrors('consenso');

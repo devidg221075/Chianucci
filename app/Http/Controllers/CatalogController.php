@@ -48,7 +48,10 @@ class CatalogController extends Controller
         $seo = Seo::make(
             __('site.catalog.seo_description'),
             url("/$locale/".config("site.catalog_slug.$locale")),
-            collect(config('site.locales'))->mapWithKeys(fn ($l) => [$l => url("/$l/".config("site.catalog_slug.$l"))])->all(),
+            // Cambiando lingua si resta nella stessa categoria.
+            collect(config('site.locales'))->mapWithKeys(fn ($l) => [
+                $l => url("/$l/".config("site.catalog_slug.$l")).($categoria !== null ? '?'.http_build_query(['categoria' => $categoria]) : ''),
+            ])->all(),
         );
 
         return view('catalog.index', [

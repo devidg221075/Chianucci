@@ -51,6 +51,12 @@ class ImportSite extends Command
         foreach ($importer->duplicates as $slug => $code) {
             $this->warn("Codice articolo ripetuto: $slug usa lo stesso codice di un altro prodotto ($code)");
         }
+        foreach ($importer->englishOnly as $slug) {
+            $this->warn("Prodotto presente solo in inglese sul sito vecchio, creato con lo stesso testo in italiano: $slug");
+        }
+        foreach ($importer->withoutEnglish as $slug) {
+            $this->warn("Nessuna versione inglese sul sito vecchio (si mostra il testo italiano): $slug");
+        }
         foreach ($importer->failures as $url => $error) {
             $this->error("$url: $error");
         }

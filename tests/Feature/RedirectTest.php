@@ -30,6 +30,31 @@ class RedirectTest extends TestCase
         $this->assertSame('/it/c', Redirect::where('from_path', '/it/b')->value('to_path'));
     }
 
+    public function test_saving_a_redirect_never_leaves_a_loop(): void
+    {
+        Redirect::create(['from_path' => '/a', 'to_path' => '/b']);
+        Redirect::create(['from_path' => '/b', 'to_path' => '/a']);
+        $this->assertNoRedirectLoops();
+
+        Redirect::query()->delete();
+        Redirect::create(['from_path' => '/a', 'to_path' => '/b']);
+        Redirect::create(['from_path' => '/b', 'to_path' => '/c']);
+        Redirect::create(['from_path' => '/c', 'to_path' => '/a']);
+        $this->assertNoRedirectLoops();
+    }
+
+    private function assertNoRedirectLoops(): void
+    {
+        $map = Redirect::pluck('to_path', 'from_path')->all();
+        foreach ($map as $from => $to) {
+            $this->assertNotSame($from, Redirect::normalize($to), "$from punta a se stesso");
+            $steps = 0;
+            for ($p = $from; isset($map[$p]); $p = Redirect::normalize($map[$p])) {
+                $this->assertLessThan(10, ++$steps, "anello a partire da $from");
+            }
+        }
+    }
+
     public function test_a_redirect_to_itself_is_refused(): void
     {
         $this->expectException(\InvalidArgumentException::class);

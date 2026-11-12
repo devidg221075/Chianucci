@@ -11,7 +11,7 @@
 <section class="sezione"><div class="contenitore"><div class="griglia griglia-alto">
     <div class="col-meta">
         @foreach ($product->images as $image)
-            <img src="{{ asset('storage/'.$image->path) }}" alt="{{ $t->name }}" class="foto-prodotto mb-4">
+            <img src="{{ asset('storage/'.$image->path) }}" alt="{{ $t->name }}" class="foto-prodotto foto-prodotto-grande mb-4">
         @endforeach
     </div>
     <div class="col-meta">

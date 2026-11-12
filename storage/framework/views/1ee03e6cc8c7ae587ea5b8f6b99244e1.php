@@ -63,14 +63,14 @@
                 <a href="<?php echo e(SiteUrls::page('area-clienti', $locale)); ?>" class="btn-primario"><?php echo e(__('site.area_clienti')); ?></a>
                 <?php if (isset($component)) { $__componentOriginal2816f070aad2a35f261d95e4abb88fcf = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal2816f070aad2a35f261d95e4abb88fcf = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.language-switch','data' => ['locale' => $locale,'slug' => $currentSlug]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.language-switch','data' => ['locale' => $locale,'slug' => $currentSlug,'alternates' => $seo['alternates'] ?? []]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('language-switch'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['locale' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($locale),'slug' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($currentSlug)]); ?>
+<?php $component->withAttributes(['locale' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($locale),'slug' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($currentSlug),'alternates' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($seo['alternates'] ?? [])]); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
